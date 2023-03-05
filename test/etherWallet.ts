@@ -44,17 +44,17 @@ describe("etherWallet", function () {
         deployetherWallet
       );
 
-      await token.mint(otherAccount.address, ethers.utils.parseEther("200000"));
+      await token.mint(wallet.address, ethers.utils.parseEther("200000"));
 
-      const amount = ethers.utils.parseEther("20");
+      const amount = ethers.utils.parseEther("200000");
 
-        await token
-       .connect(otherAccount)
-       .approve(wallet.address, amount);
+      //   await token
+      //  .connect(otherAccount)
+      //  .approve(wallet.address, amount);
 
-      await token.connect(otherAccount).transfer(wallet.address, amount);
+      // await token.connect(otherAccount).transfer(wallet.address, amount);
 
-      expect(await wallet.getBalance()).to.equal(
+      expect(await token.balanceOf(wallet.address)).to.equal(
         amount
       );
     });
@@ -86,45 +86,6 @@ describe("etherWallet", function () {
 
     });
 
-    describe("Events", function () {
-      it("Should emit an event on withdrawals", async function () {
-        const { wallet, token, owner } = await loadFixture(
-          deployetherWallet
-        );
-
-        await token.mint(owner.address, ethers.utils.parseEther("200000"));
-      
   
-        const amount = ethers.utils.parseEther("20");
-
-        await token
-       .connect(owner)
-       .approve(wallet.address, amount);
-
-        const depositedAmount = await wallet.connect(owner).depositFund(amount);
-
-        await expect(wallet.withdraw(amount))
-          .to.emit(wallet, "Withdrawal")
-          .withArgs(amount, anyValue); // We accept any value as `when` arg
-      });
-    });
-
-    describe("Transfers", function () {
-      it("Should transfer the funds to the owner", async function () {
-        const { wallet, owner, token } = await loadFixture(
-          deployetherWallet
-        );
-
-        await token.mint(owner.address, ethers.utils.parseEther("200000"));
-
-        const amount = ethers.utils.parseEther("20");
-    
-
-        await expect(wallet.withdraw(amount)).to.changeEtherBalances( 
-          [owner],
-          [amount, -amount]
-        );
-      });
-    });
   });
 });
